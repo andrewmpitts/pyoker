@@ -1,0 +1,4 @@
+pyoker
+======
+
+Python video poker
