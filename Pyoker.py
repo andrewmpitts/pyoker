@@ -121,13 +121,44 @@ def checkFullHouse(hand):
 		return False
 
 def checkTwoPairs(hand): #Doesn't work.
-	hand = sorted(getHandRanks(hand))
-	print hand
-	if hand[0] and hand[1] == hand[0]:
-		if hand[2] and hand[3] == hand[2]:
-			return True
-	else: 
+	ranks = sorted(getHandRanks(hand))
+	pair = []
+	print ranks
+	for i in range(len(ranks)):
+		if ranks.count(ranks[i]) == 2:
+			pair.append(ranks[i])
+	if len(set(pair)) == 2:
+		return True
+	else:
 		return False
+
+def checkFourPair(hand):
+	ranks = sorted(getHandRanks(hand))
+	for i in range(2):
+		if ranks.count(ranks[i]) == 4:
+			return True
+		else:
+			return False
+
+def checkThreePair(hand):
+	ranks = sorted(getHandRanks(hand))
+	for i in range(3):
+		if ranks.count(ranks[i]) == 3:
+			return True
+		return False
+
+def checkPair(hand):
+	ranks = sorted(getHandRanks(hand))
+	print ranks
+	for i in range(4):
+		if ranks.count(ranks[i]) == 2:
+			return True
+	return False
+
+def checkHighCard(hand):
+	return max(sorted(getHandRanks(hand)))
+
+
 # print Counter(a=4,b=2,c=0,d=-2)
 
 def drawCard(x, y, card):
@@ -156,7 +187,14 @@ print 'Full house?'
 print checkFullHouse(myHand.hand)
 print 'Pairs?'
 print checkTwoPairs(myHand.hand)
-print checkTwoPairs([(4,'H'),(3,'H'),(4,'D'),(2,'S'),(3,'D')])
+print 'Four pair?'
+print checkFourPair(myHand.hand)
+print 'Three pair?'
+print checkThreePair(myHand.hand)
+print 'Pair?'
+print checkPair(myHand.hand)
+print 'High card?'
+print checkHighCard(myHand.hand)
 
 freshDeck = ['2H', '2D', '2C', '2S', '3H', '3D', '3C', '3S', '4H', '4D', '4C', '4S', '5H', '5D', '5C', '5S', '6H', '6D', '6C', '6S', '7H', '7D', '7C', '7S', '8H', '8D', '8C', '8S', '9H', '9D', '9C', '9S', '10H', '10D', '10C', '10S', 'JH', 'JD', 'JC', 'JS', 'QH', 'QD', 'QC', 'QD', 'KH', 'KD', 'KD', 'KS', 'AH', 'AD', 'AC', 'AS']
 
