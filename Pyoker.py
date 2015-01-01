@@ -18,6 +18,7 @@ pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
 
 myFont = pygame.font.SysFont("monospace", 18)
+suitFont = pygame.font.SysFont("monospace", 30)
 buttonFont = pygame.font.SysFont("monospace", 12)
 
 J = 11
@@ -33,8 +34,9 @@ diamond = u"\u2666"
 
 #score
 playerScore = 0
-
 handSize = 5
+
+handInPlay = False
 
 colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0)}
 
@@ -126,6 +128,9 @@ class hand(object):
  
 # Scoring
 
+def checkHighCard(hand):
+	return max(sorted(hand.getRanks()))
+
 def checkFlush(hand):
 	if len(hand.countSuitMatches()) == 1:
 		return True
@@ -140,9 +145,13 @@ def checkStraight(hand):
 			# print hand[i]
 			count += 1
 	if count == 5:
-		return True, hand[4]
+		return True
 	else:
-		return False, hand[4]
+		return False
+
+def checkRoyalFlush(hand):
+	if checkFlush(hand) == True and checkStraight(hand) == True:
+		return True, checkHighCard(hand)
 
 def checkFullHouse(hand):
 	hand = sorted(hand.getRanks())
@@ -189,13 +198,10 @@ def checkPair(hand):
 			return True
 	return False
 
-def checkHighCard(hand):
-	return max(sorted(hand.getRanks()))
-
 
 deck = newDeck()
 playerHand = hand(drawHand(deck,5))
-
+cardsHeld = set()
 # print 'Flush? '
 # print checkFlush(playerHand)
 # print 'Straight?'
@@ -258,10 +264,10 @@ def renderCard(position, card):
 
 	#render card suit
 	if suit == spade or suit == club:
-		suit = myFont.render(suit, 1, (0, 0, 0))
+		suit = suitFont.render(suit, 1, (0, 0, 0))
 	else:
-		suit = myFont.render(suit, 1, (255, 0, 0))
-	screen.blit(suit, (position[0] + 40, position[1] + 66))
+		suit = suitFont.render(suit, 1, (255, 0, 0))
+	screen.blit(suit, (position[0] + 40, position[1] + 60))
 	# screen.blit(suit, position)
 
 
@@ -305,6 +311,7 @@ def renderButtons():
 	newHandButtonPos = (50, 400, 100, 25)
 	newHandButtonText = buttonFont.render("Draw New Hand", 1, (0, 0, 0))
 	holdButtonText = buttonFont.render("Hold", 1, (0, 0, 0))
+	unholdButtonText = buttonFont.render("Unhold", 1, (0, 0, 0))
 	#draw 'new hand' button
 	pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
 	pygame.draw.rect(screen, colors['white'], newHandButtonPos)
@@ -314,11 +321,16 @@ def renderButtons():
 	#draw 'hold' buttons
 	# holdButtonPos = (-25, 355, 50, 27)
 	buttonXPos =  75
+	buttonYPos = 355
 
 	for i in range(5):
 		pygame.draw.rect(screen, colors['black'], (buttonXPos + 2, 357, 52, 29))
-		pygame.draw.rect(screen, colors['white'], (buttonXPos, 355, 50, 27))
-		screen.blit(holdButtonText, (buttonXPos + 10, 362))
+		if playerHand.hand[i].card in cardsHeld:
+			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
+			screen.blit(unholdButtonText, (buttonXPos + 4, 362))
+		else:
+			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
+			screen.blit(holdButtonText, (buttonXPos + 10, 362))
 		buttonXPos += 150
 
 def getMousePos():
@@ -338,11 +350,33 @@ renderCard(card4, playerHand.hand[3])
 renderCard(card5, playerHand.hand[4])
 
 renderButtons()
+holdButtonSize = (50,27)
+holdButtonCordinates = {0:(75, 355), 1:(225, 355), 2:(375, 355), 3:(525, 355), 4:(675, 355)}
 
+def isHoldBoxClicked():
+	if pygame.mouse.get_pos() > (75, 355) and pygame.mouse.get_pos() < (125, 383):
+		return playerHand.hand[0].card
+	if pygame.mouse.get_pos() > (225, 355) and pygame.mouse.get_pos() < (275, 383):
+		return playerHand.hand[1].card
+	if pygame.mouse.get_pos() > (375, 355) and pygame.mouse.get_pos() < (425, 383):
+		return playerHand.hand[2].card
+	if pygame.mouse.get_pos() > (525, 355) and pygame.mouse.get_pos() < (575, 383):
+		return playerHand.hand[3].card
+	if pygame.mouse.get_pos() > (675, 355) and pygame.mouse.get_pos() < (725, 383):
+		return playerHand.hand[4].card
+	else:
+		return False
 
 while True:
-	
 	for event in pygame.event.get():
+		if event.type == pygame.MOUSEBUTTONUP:
+			if isHoldBoxClicked() != False:
+				if isHoldBoxClicked() not in cardsHeld:
+					cardsHeld.add(isHoldBoxClicked())
+				else:
+					cardsHeld.remove(isHoldBoxClicked())
+				print cardsHeld
+			renderButtons()
 		if event.type == QUIT:
 			pygame.quit()
 			sys.ext()
