@@ -17,6 +17,9 @@ screen = pygame.display.set_mode((800,450))
 pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
 
+myFont = pygame.font.SysFont("monospace", 18)
+buttonFont = pygame.font.SysFont("monospace", 12)
+
 J = 11
 Q = 12
 K = 13
@@ -31,8 +34,9 @@ diamond = u"\u2666"
 #score
 playerScore = 0
 
+handSize = 5
+
 colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0)}
-print colors['white']
 
 class Card(object):
 
@@ -49,22 +53,25 @@ def newDeck():
 	random.shuffle(newDeck)
 	return newDeck
 
+def shuffleDeck(deck):
+	random.shuffle(deck)
+	return deck
+
 def drawHand(deck, size):
 	hand = []
 	for i in range(size):
 		# print self.deck[-1]
 		hand.append(deck.pop())
-
-		
 	return hand
+
+def drawCard(deck):
+	return deck.pop()
 
 class deck(object):
 
 	def __init__(self):
-		# self.deck = newDeck(self)
 		self.deck = [(2, heart), (2, diamond), (2, club), (2, spade), (3, heart), (3, diamond), (3, club), (3, spade), (4, heart), (4, diamond), (4, club), (4, spade), (5, heart), (5, diamond), (5, club), (5, spade), (6, heart), (6, diamond), (6, club), (6, spade), (7, heart), (7, diamond), (7, club), (7, spade), (8, heart), (8, diamond), (8, club), (8, spade), (9, heart), (9, diamond), (9, club), (9, spade), (10, heart), (10, diamond), (10, club), (10, spade), (11, heart), (11, diamond), (11, club), (11, spade), (12, heart), (12, diamond), (12, club), (12, spade), (13, heart), (13, diamond), (13, club), (13, spade), (14, heart), (14, diamond), (14, club), (14, spade)]
 		# self.deck = [(2, 'H'), (2, 'D'), (2, 'C'), (2, 'D'), (3, 'H'), (3, 'D'), (3, 'C'), (3, 'D'), (4, 'H'), (4, 'D'), (4, 'C'), (4, 'D'), (5, 'H'), (5, 'D'), (5, 'C'), (5, 'D'), (6, 'H'), (6, 'D'), (6, 'C'), (6, 'D'), (7, 'H'), (7, 'D'), (7, 'C'), (7, 'D'), (8, 'H'), (8, 'D'), (8, 'C'), (8, 'D'), (9, 'H'), (9, 'D'), (9, 'C'), (9, 'D'), (10, 'H'), (10, 'D'), (10, 'C'), (10, 'D'), ('J', 'H'), ('J', 'D'), ('J', 'C'), ('J', 'D'), ('Q', 'H'), ('Q', 'D'), ('Q', 'C'), ('Q', 'D'), ('K', 'H'), ('K', 'D'), ('K', 'C'), ('K', 'D'), ('A', 'H'), ('A', 'D'), ('A', 'C'), ('A', 'D')]
-	
 		self.size = len(self.deck)
 
 
@@ -80,12 +87,13 @@ class hand(object):
 		# self.cards = 
 
 	# Designates cards to omit from draw
-	def hold(self, hand, cardsHeld):
+	def hold(self, cardsHeld):
 		newHand = []
 		for i in range(len(cardsHeld)):
-			newHand.append(hand[i])
-		for i in range(5 - len(cardsHeld)):
-			newHand.append(decks.drawHand(1))
+			newHand.append(self.hand[i])
+		for i in range(handSize - len(cardsHeld)):
+			newHand.append(drawCard(deck))
+		self.hand = newHand
 		return newHand
 
 	def scoreHand(self, hand):
@@ -116,8 +124,6 @@ class hand(object):
 	def countSuitMatches(self):
 		return collections.Counter(self.getSuits())
  
-
-
 # Scoring
 
 def checkFlush(hand):
@@ -190,28 +196,29 @@ def checkHighCard(hand):
 deck = newDeck()
 playerHand = hand(drawHand(deck,5))
 
-print 'Flush? '
-print checkFlush(playerHand)
-print 'Straight?'
-print checkStraight(playerHand)
-print 'Full house?'
-print checkFullHouse(playerHand)
-print 'Pairs?'
-print checkTwoPairs(playerHand)
-print 'Four pair?'
-print checkFourPair(playerHand)
-print 'Three pair?'
-print checkThreePair(playerHand)
-print 'Pair?'
-print checkPair(playerHand)
-print 'High card?'
-print checkHighCard(playerHand)
-
-freshDeck = ['2H', '2D', '2C', '2S', '3H', '3D', '3C', '3S', '4H', '4D', '4C', '4S', '5H', '5D', '5C', '5S', '6H', '6D', '6C', '6S', '7H', '7D', '7C', '7S', '8H', '8D', '8C', '8S', '9H', '9D', '9C', '9S', '10H', '10D', '10C', '10S', 'JH', 'JD', 'JC', 'JS', 'QH', 'QD', 'QC', 'QD', 'KH', 'KD', 'KD', 'KS', 'AH', 'AD', 'AC', 'AS']
-
-shuffledDeck = random.shuffle(freshDeck, random.random)
-
-
+# print 'Flush? '
+# print checkFlush(playerHand)
+# print 'Straight?'
+# print checkStraight(playerHand)
+# print 'Full house?'
+# print checkFullHouse(playerHand)
+# print 'Pairs?'
+# print checkTwoPairs(playerHand)
+# print 'Four pair?'
+# print checkFourPair(playerHand)
+# print 'Three pair?'
+# print checkThreePair(playerHand)
+# print 'Pair?'
+# print checkPair(playerHand)
+# print 'High card?'
+# print checkHighCard(playerHand)
+# cardsHeld = [0,1,2]
+# print playerHand.hold(cardsHeld)
+# cardsHeld = []
+# print playerHand.getCards()
+# print playerHand.hand
+# print playerHand.ranks
+# print drawCard(deck).card
 
 # GUI
 
@@ -221,8 +228,7 @@ card3 = (350, 200, 100, 150)
 card4 = (500, 200, 100, 150)
 card5 = (650, 200, 100, 150)
 scoreTable = (25, 25, 750, 150)
-myFont = pygame.font.SysFont("monospace", 18)
-buttonFont = pygame.font.SysFont("monospace", 12)
+
 
 def convertSuitToUnicode(suit):
 	if suit == 'spade':
@@ -315,6 +321,14 @@ def renderButtons():
 		screen.blit(holdButtonText, (buttonXPos + 10, 362))
 		buttonXPos += 150
 
+def getMousePos():
+	return pygame.mouse.get_pos()
+
+def getClick():
+	if pygame.mouse.get_pressed() == (1,0,0):
+		print True
+	else:
+		return False
 
 renderScoreTable(scoreTable)
 renderCard(card1, playerHand.hand[0])
@@ -327,6 +341,7 @@ renderButtons()
 
 
 while True:
+	
 	for event in pygame.event.get():
 		if event.type == QUIT:
 			pygame.quit()
