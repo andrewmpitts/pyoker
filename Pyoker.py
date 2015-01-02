@@ -291,6 +291,7 @@ def renderScoreTable(position):
 	twoPair = myFont.render("Flush: 25", 1, (255,255,0))
 	pair = myFont.render("Pair: 10", 1, (255,255,0))
 	nothing = myFont.render("Nothing: -25", 1, (255,255,0))
+	scoredHand = myFont.render("Current Hand's Score: ", 1, (255,255,0))
 
 	#draw hand scores
 	screen.blit(royalFlush, (40, 32))
@@ -302,6 +303,7 @@ def renderScoreTable(position):
 	screen.blit(threeKind, (40, 116))
 	screen.blit(twoPair, (40, 130))
 	screen.blit(pair, (40, 144))
+	screen.blit(scoredHand, (487, 45))
 
 	#player score
 	playerScoreText = myFont.render("Player Score: " + str(playerScore), 1, (255,255,0))
@@ -315,7 +317,7 @@ def renderButtons():
 	#draw 'new hand' button
 	pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
 	pygame.draw.rect(screen, colors['white'], newHandButtonPos)
-	screen.blit(newHandButtonText, (55, 405))
+	screen.blit(newHandButtonText, (55, 407))
 	# pygame.draw.rect(screen, colors['blue'], newHandButtonPos)
 
 	#draw 'hold' buttons
@@ -323,7 +325,7 @@ def renderButtons():
 	buttonXPos =  75
 	buttonYPos = 355
 
-	for i in range(5):
+	for i in range(handSize):
 		pygame.draw.rect(screen, colors['black'], (buttonXPos + 2, 357, 52, 29))
 		if playerHand.hand[i].card in cardsHeld:
 			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
@@ -332,6 +334,24 @@ def renderButtons():
 			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
 			screen.blit(holdButtonText, (buttonXPos + 10, 362))
 		buttonXPos += 150
+		
+def renderHoldAllButton():
+	holdAllButtonText = buttonFont.render("Hold All", 1, (0, 0, 0))
+	pygame.draw.rect(screen, colors['black'], (245, 400, 77, 27))
+	pygame.draw.rect(screen, colors['white'], (245, 400, 75, 25))
+	screen.blit(holdAllButtonText, (255, 407))
+
+def renderUnholdAllButton():
+	holdAllButtonText = buttonFont.render("Unhold All", 1, (0, 0, 0))
+	pygame.draw.rect(screen, colors['black'], (325, 400, 77, 27))
+	pygame.draw.rect(screen, colors['white'], (325, 400, 75, 25))
+	screen.blit(holdAllButtonText, (329, 407))
+
+def renderDrawButton():
+	drawButtonText = buttonFont.render("Draw", 1, (0, 0, 0))
+	pygame.draw.rect(screen, colors['black'], (160, 400, 77, 27))
+	pygame.draw.rect(screen, colors['white'], (160, 400, 75, 25))
+	screen.blit(drawButtonText, (185, 407))
 
 def getMousePos():
 	return pygame.mouse.get_pos()
@@ -350,32 +370,73 @@ renderCard(card4, playerHand.hand[3])
 renderCard(card5, playerHand.hand[4])
 
 renderButtons()
-holdButtonSize = (50,27)
+renderHoldAllButton()
+renderDrawButton()
+renderUnholdAllButton()
+
+newHandButtonPos = (50, 400)
+newHandButtonSize = (100, 25)
+
+holdButtonSize = (50, 27)
 holdButtonCordinates = {0:(75, 355), 1:(225, 355), 2:(375, 355), 3:(525, 355), 4:(675, 355)}
 
-def isHoldBoxClicked():
-	if pygame.mouse.get_pos() > (75, 355) and pygame.mouse.get_pos() < (125, 383):
-		return playerHand.hand[0].card
-	if pygame.mouse.get_pos() > (225, 355) and pygame.mouse.get_pos() < (275, 383):
-		return playerHand.hand[1].card
-	if pygame.mouse.get_pos() > (375, 355) and pygame.mouse.get_pos() < (425, 383):
-		return playerHand.hand[2].card
-	if pygame.mouse.get_pos() > (525, 355) and pygame.mouse.get_pos() < (575, 383):
-		return playerHand.hand[3].card
-	if pygame.mouse.get_pos() > (675, 355) and pygame.mouse.get_pos() < (725, 383):
-		return playerHand.hand[4].card
+drawButtonPos = (160, 400)
+drawButtonSize = (77, 27)
+
+unholdAllButtonPos = (325, 400)
+unholdAllButtonSize = (75, 25)
+
+holdAllButtonPos = (245, 400)
+holdAllButtonSize = (75, 25)
+
+def isHoldButtonClicked():
+	#card1
+	if pygame.mouse.get_pos()[0] > 75 and pygame.mouse.get_pos()[0] < 125:
+		if pygame.mouse.get_pos()[1] > 355 and pygame.mouse.get_pos()[1] < 383:
+			return playerHand.hand[0].card
+	#card2
+	if pygame.mouse.get_pos()[0] > 225 and pygame.mouse.get_pos()[0] < 275:
+		if pygame.mouse.get_pos()[1] > 355 and pygame.mouse.get_pos()[1] < 383:
+			return playerHand.hand[1].card
+	#card3
+	if pygame.mouse.get_pos()[0] > 375 and pygame.mouse.get_pos()[0] < 425:
+		if pygame.mouse.get_pos()[1] > 355 and pygame.mouse.get_pos()[1] < 383:
+			return playerHand.hand[2].card
+	#card4
+	if pygame.mouse.get_pos()[0] > 525 and pygame.mouse.get_pos()[0] < 575:
+		if pygame.mouse.get_pos()[1] > 355 and pygame.mouse.get_pos()[1] < 383:
+			return playerHand.hand[3].card
+	#card5
+	if pygame.mouse.get_pos()[0] > 675 and pygame.mouse.get_pos()[0] < 725:
+		if pygame.mouse.get_pos()[1] > 355 and pygame.mouse.get_pos()[1] < 383:
+			return playerHand.hand[4].card
 	else:
 		return False
+
+
+def isRectClicked(position, dimensions):
+	mousePosition = pygame.mouse.get_pos()
+	if mousePosition[0] > position[0] and mousePosition[0] < position[0] + dimensions[0]:
+		if mousePosition[1] > position[1] and mousePosition[1] < position[1] + dimensions[1]:
+			return True
 
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.MOUSEBUTTONUP:
-			if isHoldBoxClicked() != False:
-				if isHoldBoxClicked() not in cardsHeld:
-					cardsHeld.add(isHoldBoxClicked())
+			if isRectClicked(newHandButtonPos, newHandButtonSize) == True:
+				print True
+			if isHoldButtonClicked() != False:
+				if isHoldButtonClicked() not in cardsHeld:
+					cardsHeld.add(isHoldButtonClicked())
 				else:
-					cardsHeld.remove(isHoldBoxClicked())
+					cardsHeld.remove(isHoldButtonClicked())
 				print cardsHeld
+			if isRectClicked(drawButtonPos, drawButtonSize) == True:
+				print True
+			if isRectClicked(unholdAllButtonPos, unholdAllButtonSize) == True:
+				print True
+			if isRectClicked(holdAllButtonPos, holdAllButtonSize) == True:
+				print True
 			renderButtons()
 		if event.type == QUIT:
 			pygame.quit()
