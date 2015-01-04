@@ -4,7 +4,7 @@ import random
 import sys
 import collections
 import _abcoll
-import classes
+# import classes
 from pygame.locals import *
 
 
@@ -87,6 +87,8 @@ class hand(object):
 		self.hand = hand
 		self.length = len(hand)
 		# self.cards = 
+
+
 
 	# Designates cards to omit from draw
 	def hold(self, cardsHeld):
@@ -374,20 +376,26 @@ renderHoldAllButton()
 renderDrawButton()
 renderUnholdAllButton()
 
-newHandButtonPos = (50, 400)
+newHandButtonRect = (50, 400, 100, 25)
 newHandButtonSize = (100, 25)
 
 holdButtonSize = (50, 27)
 holdButtonCordinates = {0:(75, 355), 1:(225, 355), 2:(375, 355), 3:(525, 355), 4:(675, 355)}
 
-drawButtonPos = (160, 400)
+drawButtonRect = (160, 400, 77, 27)
 drawButtonSize = (77, 27)
 
-unholdAllButtonPos = (325, 400)
+unholdAllButtonRect = (325, 400, 75, 25)
 unholdAllButtonSize = (75, 25)
 
-holdAllButtonPos = (245, 400)
+holdAllButtonRect = (245, 400, 75, 25)
 holdAllButtonSize = (75, 25)
+
+def isRectClicked(dimensions):
+	mousePosition = pygame.mouse.get_pos()
+	if mousePosition[0] > dimensions[0] and mousePosition[0] < dimensions[0] + dimensions[2]:
+		if mousePosition[1] > dimensions[1] and mousePosition[1] < dimensions[1] + dimensions[3]:
+			return True
 
 def isHoldButtonClicked():
 	#card1
@@ -414,16 +422,11 @@ def isHoldButtonClicked():
 		return False
 
 
-def isRectClicked(position, dimensions):
-	mousePosition = pygame.mouse.get_pos()
-	if mousePosition[0] > position[0] and mousePosition[0] < position[0] + dimensions[0]:
-		if mousePosition[1] > position[1] and mousePosition[1] < position[1] + dimensions[1]:
-			return True
 
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.MOUSEBUTTONUP:
-			if isRectClicked(newHandButtonPos, newHandButtonSize) == True:
+			if isRectClicked(newHandButtonRect) == True: #Checks if 'New Hand' button is clicked
 				print True
 			if isHoldButtonClicked() != False:
 				if isHoldButtonClicked() not in cardsHeld:
@@ -431,11 +434,12 @@ while True:
 				else:
 					cardsHeld.remove(isHoldButtonClicked())
 				print cardsHeld
-			if isRectClicked(drawButtonPos, drawButtonSize) == True:
+			if isRectClicked(drawButtonRect) == True: #Checks is 'Draw' button is clicked
+
 				print True
-			if isRectClicked(unholdAllButtonPos, unholdAllButtonSize) == True:
+			if isRectClicked(unholdAllButtonRect) == True:
 				print True
-			if isRectClicked(holdAllButtonPos, holdAllButtonSize) == True:
+			if isRectClicked(holdAllButtonRect) == True:
 				print True
 			renderButtons()
 		if event.type == QUIT:
