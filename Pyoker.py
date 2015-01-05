@@ -38,7 +38,7 @@ handSize = 5
 
 handInPlay = False
 
-colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0)}
+colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0), 'grey': (125, 125, 125)}
 
 class Card(object):
 
@@ -324,15 +324,15 @@ def renderScoreTable(position):
 
 	#player score
 def renderPlayerScore():
-	pygame.draw.rect(screen, colors['blue'], (725, 30, 25, 20))
+	pygame.draw.rect(screen, colors['blue'], (575, 30, 175, 20))
 	playerScoreText = myFont.render("Player Score: " + str(playerScore), 1, (255,255,0))
 	screen.blit(playerScoreText, (575, 32))
 
 def renderButtons():
 	newHandButtonPos = (50, 400, 100, 25)
 	newHandButtonText = buttonFont.render("Draw New Hand", 1, (0, 0, 0))
-	holdButtonText = buttonFont.render("Discard", 1, (0, 0, 0))
-	unholdButtonText = buttonFont.render("Hold", 1, (0, 0, 0))
+	discardButtonText = buttonFont.render("Discard", 1, (0, 0, 0))
+	undiscardButtonText = buttonFont.render("Hold", 1, (0, 0, 0))
 	#draw 'new hand' button
 	pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
 	pygame.draw.rect(screen, colors['white'], newHandButtonPos)
@@ -348,10 +348,10 @@ def renderButtons():
 		pygame.draw.rect(screen, colors['black'], (buttonXPos + 2, 357, 52, 29))
 		if playerHand.hand[i].card in discards:
 			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
-			screen.blit(unholdButtonText, (buttonXPos + 4, 362))
+			screen.blit(undiscardButtonText, (buttonXPos + 4, 362))
 		else:
 			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
-			screen.blit(holdButtonText, (buttonXPos + 10, 362))
+			screen.blit(discardButtonText, (buttonXPos + 10, 362))
 		buttonXPos += 150
 		
 def renderHoldAllButton():
