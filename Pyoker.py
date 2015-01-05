@@ -324,6 +324,7 @@ def renderScoreTable(position):
 
 	#player score
 def renderPlayerScore():
+	pygame.draw.rect(screen, colors['blue'], (725, 30, 25, 20))
 	playerScoreText = myFont.render("Player Score: " + str(playerScore), 1, (255,255,0))
 	screen.blit(playerScoreText, (575, 32))
 
