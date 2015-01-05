@@ -7,16 +7,14 @@ import _abcoll
 # import classes
 from pygame.locals import *
 
-
-# init window, runtime
-
-
 pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((800,450))
 pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
 
+
+#GUI Fonts
 myFont = pygame.font.SysFont("monospace", 18)
 suitFont = pygame.font.SysFont("monospace", 30)
 buttonFont = pygame.font.SysFont("monospace", 12)
@@ -67,18 +65,6 @@ def drawHand(deck):
 
 def drawCard(deck):
 	return deck.pop()
-
-class deck(object):
-
-	def __init__(self):
-		self.deck = [(2, heart), (2, diamond), (2, club), (2, spade), (3, heart), (3, diamond), (3, club), (3, spade), (4, heart), (4, diamond), (4, club), (4, spade), (5, heart), (5, diamond), (5, club), (5, spade), (6, heart), (6, diamond), (6, club), (6, spade), (7, heart), (7, diamond), (7, club), (7, spade), (8, heart), (8, diamond), (8, club), (8, spade), (9, heart), (9, diamond), (9, club), (9, spade), (10, heart), (10, diamond), (10, club), (10, spade), (11, heart), (11, diamond), (11, club), (11, spade), (12, heart), (12, diamond), (12, club), (12, spade), (13, heart), (13, diamond), (13, club), (13, spade), (14, heart), (14, diamond), (14, club), (14, spade)]
-		# self.deck = [(2, 'H'), (2, 'D'), (2, 'C'), (2, 'D'), (3, 'H'), (3, 'D'), (3, 'C'), (3, 'D'), (4, 'H'), (4, 'D'), (4, 'C'), (4, 'D'), (5, 'H'), (5, 'D'), (5, 'C'), (5, 'D'), (6, 'H'), (6, 'D'), (6, 'C'), (6, 'D'), (7, 'H'), (7, 'D'), (7, 'C'), (7, 'D'), (8, 'H'), (8, 'D'), (8, 'C'), (8, 'D'), (9, 'H'), (9, 'D'), (9, 'C'), (9, 'D'), (10, 'H'), (10, 'D'), (10, 'C'), (10, 'D'), ('J', 'H'), ('J', 'D'), ('J', 'C'), ('J', 'D'), ('Q', 'H'), ('Q', 'D'), ('Q', 'C'), ('Q', 'D'), ('K', 'H'), ('K', 'D'), ('K', 'C'), ('K', 'D'), ('A', 'H'), ('A', 'D'), ('A', 'C'), ('A', 'D')]
-		self.size = len(self.deck)
-
-
-	def shuffle(self):
-		random.shuffle(self.deck)
-		return self.deck
 
 class hand(object):
 	
@@ -447,6 +433,7 @@ while True:
 	for event in pygame.event.get():
 		if event.type == pygame.MOUSEBUTTONUP:
 			if isRectClicked(newHandButtonRect) == True: #Checks if 'New Hand' button is clicked
+				deck = newDeck()
 				playerHand = hand(drawHand(deck))
 				renderHand()
 				discards = set()
