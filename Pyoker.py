@@ -4,7 +4,7 @@ import random
 import sys
 import collections
 import _abcoll
-# import classes
+import poker
 from pygame.locals import *
 
 pygame.init()
@@ -13,16 +13,12 @@ screen = pygame.display.set_mode((800,450))
 pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
 
-
-#GUI Fonts
-myFont = pygame.font.SysFont("monospace", 18)
-suitFont = pygame.font.SysFont("monospace", 30)
-buttonFont = pygame.font.SysFont("monospace", 12)
-
 J = 11
 Q = 12
 K = 13
 A = 14
+
+handInPlay = False
 
 #suits
 spade = u"\u2660"
@@ -34,203 +30,15 @@ diamond = u"\u2666"
 playerScore = 0
 handSize = 5
 
-handInPlay = False
+#GUI Fonts
+myFont = pygame.font.SysFont("monospace", 18)
+suitFont = pygame.font.SysFont("monospace", 30)
+buttonFont = pygame.font.SysFont("monospace", 12)
 
+#GUI Color
 colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0), 'grey': (125, 125, 125)}
 
-class Card(object):
-
-	def __init__(self, rank, suit):
-		self.rank = rank
-		self.suit = suit
-		self.card = (rank, suit)
-
-def newDeck():
-	newDeck = []
-	for i in [2,3,4,5,6,7,8,9,10,J,Q,K,A]:
-		for n in ['heart','diamond','club','spade']:
-			newDeck.append(Card(i,n))
-	random.shuffle(newDeck)
-	return newDeck
-
-def shuffleDeck(deck):
-	random.shuffle(deck)
-	return deck
-
-def drawHand(deck):
-	hand = []
-	for i in range(handSize):
-		hand.append(deck.pop())
-	return hand
-
-def drawCard(deck):
-	return deck.pop()
-
-class hand(object):
-	
-	def __init__(self, hand):
-		self.hand = hand
-		self.length = len(hand)
-		# self.cards = 
-
-	def discard(self, discards):
-		if len(discards) > 0:
-			print len(discards)
-			for i in discards:
-				self.hand.remove(i)
-				self.hand.append(drawCard(deck))
-			return self.hand
-		else:
-			return False
-
-	# Designates cards to omit from draw
-	def hold(self, cardsHeld):
-		newHand = []
-		for i in range(len(cardsHeld)):
-			newHand.append(self.hand[i])
-		for i in range(handSize - len(cardsHeld)):
-			newHand.append(drawCard(deck))
-		self.hand = newHand
-		return newHand
-
-	def scoreHand(self):
-		
-		if checkFourPair(self) == True:
-			print "Four of a Kind: 150 Points"
-			return 150
-
-		if checkFullHouse(self) == True:
-			print "Full House: 125 Points"
-			return 125
-
-		if checkFlush(self) == True:
-			print "Flush: 100 Points"
-			return 100
-
-		if checkStraight(self) == True:
-			print "Straight: 75 Points"
-			return 75
-
-		if checkThreePair(self) == True:
-			print "Three of a Kind: 50 Points"
-			return 50
-
-		if checkTwoPairs(self) == True:
-			print "Two Pairs: 25 Points"
-			return 25
-
-		if checkPair(self) == True:
-			return 10
-
-		print "No valid hands. High card is "
-		return checkHighCard(self)
-
-
-	def getCards(self):
-		cards = []
-		for i in range(len(self.hand)):
-			cards.append(self.hand[i].card)
-		return cards
-		# return self.hand[0]
-
-	def getRanks(self):
-		ranks = []
-		for i in self.hand:
-			ranks.append(i.rank)
-		return sorted(ranks)
-
-	def getSuits(self):
-		suits = []
-		for i in self.hand:
-			suits.append(i.suit)
-		return suits
-
-	def countRankMatches(self):
-		return collections.Counter(self.getRanks())
-
-	def countSuitMatches(self):
-		return collections.Counter(self.getSuits())
-
-	def sortHand(self):
-		sortedHand = sorted(self.getRanks)
- 		self.hand == sortedHand
-
-# Scoring
-
-def checkHighCard(hand):
-	return max(sorted(hand.getRanks()))
-
-def checkFlush(hand):
-	if len(hand.countSuitMatches()) == 1:
-		return True
-	else:
-		return False
-
-def checkStraight(hand):
-	hand = sorted(hand.getRanks())
-	count = 1
-	for i in range(4):
-		if hand[i] + 1 == hand[i+1]:
-			# print hand[i]
-			count += 1
-	if count == 5:
-		return True
-	else:
-		return False
-
-def checkRoyalFlush(hand):
-	if checkFlush(hand) == True and checkStraight(hand) == True:
-		return True, checkHighCard(hand)
-
-def checkFullHouse(hand):
-	hand = sorted(hand.getRanks())
-	if hand[2] == hand[4]:
-		return True, hand[1], hand[2]
-	if hand[0] == hand[2]:
-		return True, hand[0], hand[3]
-	else:
-		return False
-
-def checkTwoPairs(hand):
-	ranks = sorted(hand.getRanks())
-	pair = []
-	for i in range(len(ranks)):
-		if ranks.count(ranks[i]) == 2:
-			pair.append(ranks[i])
-	if len(set(pair)) == 2:
-		return True
-	else:
-		return False
-
-def checkFourPair(hand):
-	ranks = sorted(hand.getRanks())
-	for i in range(2):
-		if ranks.count(ranks[i]) == 4:
-			return True
-		else:
-			return False
-
-def checkThreePair(hand):
-	ranks = sorted(hand.getRanks())
-	for i in range(3):
-		if ranks.count(ranks[i]) == 3:
-			return True
-		return False
-
-def checkPair(hand):
-	ranks = sorted(hand.getRanks())
-	for i in range(4):
-		if ranks.count(ranks[i]) == 2:
-			return True
-	return False
-
-
-deck = newDeck()
-playerHand = hand(drawHand(deck))
-discards = set()
-
-# GUI
-
+#GUI Shapes
 card1 = (50, 200, 100, 150)
 card2 = (200, 200, 100, 150)
 card3 = (350, 200, 100, 150)
@@ -239,7 +47,11 @@ card5 = (650, 200, 100, 150)
 scoreTable = (25, 25, 750, 150)
 
 
-def convertSuitToUnicode(suit):
+deck = poker.newDeck()
+playerHand = poker.hand(poker.drawHand(deck))
+discards = set()
+
+def convertSuitToUnicode(suit): #Converts the card suit into Unicode for display in GUI
 	if suit == 'spade':
 		return spade
 	if suit == 'club':
@@ -249,10 +61,16 @@ def convertSuitToUnicode(suit):
 	else:
 		return heart
 
+drawNewHandButtonEnabled = True
+holdButtonsEnabled = False
+drawButtonEnabled = False
+discardAllButtonEnabled = False
+holdAllButtonEnabled = False
+
 def renderCard(position, card):
 
 	suit = convertSuitToUnicode(card.suit)
-	# print suit
+
 	#draw card border
 	pygame.draw.rect(screen, colors['black'], position)
 
@@ -314,49 +132,70 @@ def renderPlayerScore():
 	playerScoreText = myFont.render("Player Score: " + str(playerScore), 1, (255,255,0))
 	screen.blit(playerScoreText, (575, 32))
 
-def renderButtons():
+def renderDrawNewHandButton():
 	newHandButtonPos = (50, 400, 100, 25)
 	newHandButtonText = buttonFont.render("Draw New Hand", 1, (0, 0, 0))
+	if drawNewHandButtonEnabled == True:
+		pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
+		pygame.draw.rect(screen, colors['white'], newHandButtonPos)
+		screen.blit(newHandButtonText, (55, 407))
+	else:
+		pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
+		pygame.draw.rect(screen, colors['grey'], newHandButtonPos)
+		screen.blit(newHandButtonText, (55, 407))
+
+def renderDiscardButtons():
+	
 	discardButtonText = buttonFont.render("Discard", 1, (0, 0, 0))
 	undiscardButtonText = buttonFont.render("Hold", 1, (0, 0, 0))
-	#draw 'new hand' button
-	pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
-	pygame.draw.rect(screen, colors['white'], newHandButtonPos)
-	screen.blit(newHandButtonText, (55, 407))
-	# pygame.draw.rect(screen, colors['blue'], newHandButtonPos)
-
-	#draw 'hold' buttons
-	# holdButtonPos = (-25, 355, 50, 27)
-	buttonXPos =  75
+	buttonXPos =  65
 	buttonYPos = 355
 
 	for i in range(handSize):
-		pygame.draw.rect(screen, colors['black'], (buttonXPos + 2, 357, 52, 29))
-		if playerHand.hand[i].card in discards:
-			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
-			screen.blit(undiscardButtonText, (buttonXPos + 4, 362))
+		pygame.draw.rect(screen, colors['black'], (buttonXPos, 357, 72, 29))
+		if playerHand.hand[i] in discards:
+			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 70, 27))
+			screen.blit(undiscardButtonText, (buttonXPos + 20, 362))
 		else:
-			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 50, 27))
+			pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 70, 27))
 			screen.blit(discardButtonText, (buttonXPos + 10, 362))
 		buttonXPos += 150
 		
 def renderHoldAllButton():
-	holdAllButtonText = buttonFont.render("Hold All", 1, (0, 0, 0))
-	pygame.draw.rect(screen, colors['black'], (245, 400, 77, 27))
-	pygame.draw.rect(screen, colors['white'], (245, 400, 75, 25))
-	screen.blit(holdAllButtonText, (255, 407))
+	if holdAllButtonEnabled == True:
+		holdAllButtonText = buttonFont.render("Hold All", 1, (0, 0, 0))
+		pygame.draw.rect(screen, colors['black'], (245, 400, 77, 27))
+		pygame.draw.rect(screen, colors['white'], (245, 400, 75, 25))
+		screen.blit(holdAllButtonText, (255, 407))
+	else:
+		holdAllButtonText = buttonFont.render("Hold All", 1, (0, 0, 0))
+		pygame.draw.rect(screen, colors['black'], (245, 400, 77, 27))
+		pygame.draw.rect(screen, colors['grey'], (245, 400, 75, 25))
+		screen.blit(holdAllButtonText, (255, 407))
 
-def renderUnholdAllButton():
-	holdAllButtonText = buttonFont.render("Unhold All", 1, (0, 0, 0))
-	pygame.draw.rect(screen, colors['black'], (325, 400, 77, 27))
-	pygame.draw.rect(screen, colors['white'], (325, 400, 75, 25))
-	screen.blit(holdAllButtonText, (329, 407))
+def renderDiscardAllButton():
+	if discardAllButtonEnabled == True:
+		holdAllButtonText = buttonFont.render("Discard All", 1, (0, 0, 0))
+		pygame.draw.rect(screen, colors['black'], (325, 400, 77, 27))
+		pygame.draw.rect(screen, colors['white'], (325, 400, 75, 25))
+		screen.blit(holdAllButtonText, (329, 407))
+	else: 
+		holdAllButtonText = buttonFont.render("Discard All", 1, (0, 0, 0))
+		pygame.draw.rect(screen, colors['black'], (325, 400, 77, 27))
+		pygame.draw.rect(screen, colors['grey'], (325, 400, 75, 25))
+		screen.blit(holdAllButtonText, (329, 407))
 
 def renderDrawButton():
-	drawButtonText = buttonFont.render("Draw", 1, (0, 0, 0))
-	pygame.draw.rect(screen, colors['black'], (160, 400, 77, 27))
-	pygame.draw.rect(screen, colors['white'], (160, 400, 75, 25))
-	screen.blit(drawButtonText, (185, 407))
+	if drawButtonEnabled == True:
+		drawButtonText = buttonFont.render("Draw", 1, (0, 0, 0))
+		pygame.draw.rect(screen, colors['black'], (160, 400, 77, 27))
+		pygame.draw.rect(screen, colors['white'], (160, 400, 75, 25))
+		screen.blit(drawButtonText, (185, 407))
+	else:
+		drawButtonText = buttonFont.render("Draw", 1, (0, 0, 0))
+		pygame.draw.rect(screen, colors['black'], (160, 400, 77, 27))
+		pygame.draw.rect(screen, colors['grey'], (160, 400, 75, 25))
+		screen.blit(drawButtonText, (185, 407))
 
 def getMousePos():
 	return pygame.mouse.get_pos()
@@ -376,16 +215,15 @@ def renderHand():
 
 renderScoreTable(scoreTable)
 renderPlayerScore()
-renderHand()
 
-renderButtons()
+renderDrawNewHandButton()
 renderHoldAllButton()
 renderDrawButton()
-renderUnholdAllButton()
+renderDiscardAllButton()
 
 newHandButtonRect = (50, 400, 100, 25)
 drawButtonRect = (160, 400, 77, 27)
-unholdAllButtonRect = (325, 400, 75, 25)
+discardAllButtonRect = (325, 400, 75, 25)
 holdAllButtonRect = (245, 400, 75, 25)
 
 discardButtonRect1 = (75, 355, 50, 27)
@@ -396,11 +234,7 @@ discardButtonRect5 = (675, 355, 50, 27)
 
 holdButtonCordinates = {0:(75, 355), 1:(225, 355), 2:(375, 355), 3:(525, 355), 4:(675, 355)}
 
-drawNewHandButtonEnabled = True
-holdButtonsEnabled = True
-drawButtonEnabled = True
-discardAllButtonEnabled = True
-holdAllButtonEnabled = True
+
 
 def isRectClicked(dimensions):
 	mousePosition = pygame.mouse.get_pos()
@@ -432,28 +266,64 @@ def isDiscardButtonClicked():
 while True:
 	for event in pygame.event.get():
 		if event.type == pygame.MOUSEBUTTONUP:
+
 			if isRectClicked(newHandButtonRect) == True: #Checks if 'New Hand' button is clicked
-				deck = newDeck()
-				playerHand = hand(drawHand(deck))
+				deck = poker.newDeck()
+				playerHand = poker.hand(poker.drawHand(deck))
 				renderHand()
 				discards = set()
+				renderDiscardButtons()
+				discardAllButtonEnabled = True
+				renderDiscardAllButton()
+				drawButtonEnabled = True
+				renderDrawButton()
+				drawNewHandButtonEnabled = False
+				renderDrawNewHandButton()
+
 			if isDiscardButtonClicked() != False:
 				if isDiscardButtonClicked() not in discards:
 					discards.add(isDiscardButtonClicked())
 				else:
 					discards.remove(isDiscardButtonClicked())
+				renderDiscardButtons()
 				print discards
+
 			if isRectClicked(drawButtonRect) == True: #Checks is 'Draw' button is clicked
-				playerHand.discard(discards)
+				if len(discards) > 0:
+					playerHand.discard(discards, deck)
+					discards = set()
 				renderHand()
 				playerHand.scoreHand()
 				playerScore += playerHand.scoreHand()
 				renderPlayerScore()
-			if isRectClicked(unholdAllButtonRect) == True:
-				print True
+				drawButtonEnabled = False
+				renderDrawButton()
+				drawNewHandButtonEnabled = True
+				renderDrawNewHandButton()
+
+			if isRectClicked(discardAllButtonRect) == True:
+				if discardAllButtonEnabled == True:
+					for card in playerHand.hand:
+						discards.add(card)
+						discardAllButtonEnabled = False
+						renderDiscardAllButton()
+						holdAllButtonEnabled = True
+						renderHoldAllButton()
+					print discards
+				else:
+					print False
+
 			if isRectClicked(holdAllButtonRect) == True:
-				print True
-			renderButtons()
+				if holdAllButtonEnabled == True:
+					discards = set()
+					print discards
+					holdAllButtonEnabled = False
+					renderHoldAllButton()
+					discardAllButtonEnabled = True
+					renderDiscardAllButton()
+				else:
+					print False
+			renderDiscardButtons()
 		if event.type == QUIT:
 			pygame.quit()
 			sys.ext()
