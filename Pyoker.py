@@ -112,7 +112,7 @@ def renderScoreTable(position):
 	twoPair = myFont.render("Two Pairs: 25", 1, (255,255,0))
 	pair = myFont.render("Pair: 10", 1, (255,255,0))
 	nothing = myFont.render("Nothing: -25", 1, (255,255,0))
-	scoredHand = myFont.render("Current Hand's Score: ", 1, (255,255,0))
+	# scoredHand = myFont.render("Current Hand's Score: ", 1, (255,255,0))
 
 	#draw hand scores
 	screen.blit(royalFlush, (40, 32))
@@ -124,13 +124,13 @@ def renderScoreTable(position):
 	screen.blit(threeKind, (40, 116))
 	screen.blit(twoPair, (40, 130))
 	screen.blit(pair, (40, 144))
-	screen.blit(scoredHand, (487, 45))
+	# screen.blit(scoredHand, (487, 45))
 
 	#player score
 def renderPlayerScore():
-	pygame.draw.rect(screen, colors['blue'], (575, 30, 175, 20))
+	pygame.draw.rect(screen, colors['blue'], (500, 30, 190, 20))
 	playerScoreText = myFont.render("Player Score: " + str(playerScore), 1, (255,255,0))
-	screen.blit(playerScoreText, (575, 32))
+	screen.blit(playerScoreText, (500, 32))
 
 def renderDrawNewHandButton():
 	newHandButtonPos = (50, 400, 100, 25)
@@ -300,6 +300,10 @@ while True:
 				renderDrawButton()
 				drawNewHandButtonEnabled = True
 				renderDrawNewHandButton()
+				discardAllButtonEnabled = False
+				renderDiscardAllButton()
+				holdAllButtonEnabled = False
+				renderHoldAllButton()
 
 			if isRectClicked(discardAllButtonRect) == True:
 				if discardAllButtonEnabled == True:
