@@ -67,10 +67,25 @@ drawButtonEnabled = False
 discardAllButtonEnabled = False
 holdAllButtonEnabled = False
 
+def convertFaceCardRanks(card):
+	if card.rank == 11:
+		return "J"
+	if card.rank == 12:
+		return "Q"
+	if card.rank == 13:
+		return "K"
+	if card.rank == 14:
+		return "A"
+
+# print convertFaceCardRanks(playerHand.hand[0])
+
 def renderCard(position, card):
 
 	suit = convertSuitToUnicode(card.suit)
-
+	if card.rank > 10:
+		rank = convertFaceCardRanks(card)
+	else:
+		rank = card.rank
 	#draw card border
 	pygame.draw.rect(screen, colors['black'], position)
 
@@ -79,7 +94,7 @@ def renderCard(position, card):
 	pygame.draw.rect(screen, colors['white'], position)
 
 	#render card rank
-	rank = myFont.render(str(card.rank), 1, (0, 0, 0))
+	rank = myFont.render(str(rank), 1, (0, 0, 0))
 	screen.blit(rank, (position[0] + 10, position[1] + 5))
 	screen.blit(rank, (position[0] + 75, position[1] + 125))
 
@@ -89,7 +104,6 @@ def renderCard(position, card):
 	else:
 		suit = suitFont.render(suit, 1, (255, 0, 0))
 	screen.blit(suit, (position[0] + 40, position[1] + 60))
-	# screen.blit(suit, position)
 
 
 def renderScoreTable(position):
