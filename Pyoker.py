@@ -39,13 +39,22 @@ buttonFont = pygame.font.SysFont("monospace", 12)
 colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0), 'grey': (125, 125, 125)}
 
 #GUI Shapes
-card1 = (50, 200, 100, 150)
-card2 = (200, 200, 100, 150)
-card3 = (350, 200, 100, 150)
-card4 = (500, 200, 100, 150)
-card5 = (650, 200, 100, 150)
-scoreTable = (25, 25, 750, 150)
+CARD_WIDTH = 100
+CARD_HEIGHT = 150
+cardPositions = [(50, 200, CARD_WIDTH, CARD_HEIGHT), (200, 200, CARD_WIDTH, CARD_HEIGHT), (350, 200, CARD_WIDTH, CARD_HEIGHT), (500, 200, CARD_WIDTH, CARD_HEIGHT), (650, 200, CARD_WIDTH, CARD_HEIGHT)]
 
+
+DISCARD_BUTTON_WIDTH = 50
+DISCARD_BUTTON_HEIGHT = 27
+DISCARD_BUTTON_SHADOW_WIDTH = 52
+DISCARD_BUTTON_SHADOW_HEIGHT = 29
+discardButtonPositions = [(75, 355, DISCARD_BUTTON_WIDTH, DISCARD_BUTTON_HEIGHT), (225, 355, DISCARD_BUTTON_WIDTH, DISCARD_BUTTON_HEIGHT), (375, 355, DISCARD_BUTTON_WIDTH, DISCARD_BUTTON_HEIGHT), (525, 355, DISCARD_BUTTON_WIDTH, DISCARD_BUTTON_HEIGHT), (675, 355, DISCARD_BUTTON_WIDTH, DISCARD_BUTTON_HEIGHT)]
+discardButtonShadowPositions = [(75, 355, DISCARD_BUTTON_SHADOW_WIDTH, DISCARD_BUTTON_SHADOW_HEIGHT), (225, 355, DISCARD_BUTTON_SHADOW_WIDTH, DISCARD_BUTTON_SHADOW_HEIGHT), (375, 355, DISCARD_BUTTON_SHADOW_WIDTH, DISCARD_BUTTON_SHADOW_HEIGHT), (525, 355, DISCARD_BUTTON_SHADOW_WIDTH, DISCARD_BUTTON_SHADOW_HEIGHT), (675, 355, DISCARD_BUTTON_SHADOW_WIDTH, DISCARD_BUTTON_SHADOW_HEIGHT)]
+
+newHandButtonRect = (50, 400, 100, 25)
+drawButtonRect = (160, 400, 77, 27)
+discardAllButtonRect = (325, 400, 75, 25)
+holdAllButtonRect = (245, 400, 75, 25)
 
 deck = poker.newDeck()
 playerHand = poker.hand(poker.drawHand(deck))
@@ -68,6 +77,7 @@ discardAllButtonEnabled = False
 holdAllButtonEnabled = False
 
 def convertFaceCardRanks(card):
+
     if card.rank == 11:
         return "J"
     if card.rank == 12:
@@ -106,14 +116,14 @@ def renderCard(position, card):
     screen.blit(suit, (position[0] + 40, position[1] + 60))
 
 
-def renderScoreTable(position):
-
+def renderScoreTable():
+    scoreTablePosition = (25, 25, 750, 150)
     #draw border
-    pygame.draw.rect(screen, colors['white'], position)
+    pygame.draw.rect(screen, colors['white'], scoreTablePosition)
     
     #draw window
-    position = (position[0] + 5 ,position[1] + 5, 740, 140)
-    pygame.draw.rect(screen, colors['blue'], position)
+    scoreTableSInternalPosition = (scoreTablePosition[0] + 5 ,scoreTablePosition[1] + 5, 740, 140)
+    pygame.draw.rect(screen, colors['blue'], scoreTableSInternalPosition)
 
     #score text variables
     royalFlush = myFont.render("Royal Flush: 200", 1, (255,255,0))
@@ -138,7 +148,7 @@ def renderScoreTable(position):
     screen.blit(threeKind, (40, 116))
     screen.blit(twoPair, (40, 130))
     screen.blit(pair, (40, 144))
-    # screen.blit(scoredHand, (487, 45))
+    # screen.blit(scoredHand, (412, 45))
 
     #player score
 def renderPlayerScore():
@@ -166,12 +176,12 @@ def renderDiscardButtons():
     buttonYPos = 355
 
     for i in range(handSize):
-        pygame.draw.rect(screen, colors['black'], (buttonXPos, 357, 72, 29))
+        pygame.draw.rect(screen, colors['black'], discardButtonShadowPositions[i])
         if playerHand.hand[i] in discards:
-            pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 70, 27))
+            pygame.draw.rect(screen, colors['white'], discardButtonPositions[i])
             screen.blit(undiscardButtonText, (buttonXPos + 20, 362))
         else:
-            pygame.draw.rect(screen, colors['white'], (buttonXPos, buttonYPos, 70, 27))
+            pygame.draw.rect(screen, colors['white'], discardButtonPositions[i])
             screen.blit(discardButtonText, (buttonXPos + 10, 362))
         buttonXPos += 150
         
@@ -221,33 +231,15 @@ def getClick():
         return False
 
 def renderHand():
-    renderCard(card1, playerHand.hand[0])
-    renderCard(card2, playerHand.hand[1])
-    renderCard(card3, playerHand.hand[2])
-    renderCard(card4, playerHand.hand[3])
-    renderCard(card5, playerHand.hand[4])
+    for i in range(handSize):
+        renderCard(cardPositions[i], playerHand.hand[i])
 
-renderScoreTable(scoreTable)
+renderScoreTable()
 renderPlayerScore()
-
 renderDrawNewHandButton()
 renderHoldAllButton()
 renderDrawButton()
 renderDiscardAllButton()
-
-newHandButtonRect = (50, 400, 100, 25)
-drawButtonRect = (160, 400, 77, 27)
-discardAllButtonRect = (325, 400, 75, 25)
-holdAllButtonRect = (245, 400, 75, 25)
-
-discardButtonRect1 = (75, 355, 50, 27)
-discardButtonRect2 = (225, 355, 50, 27)
-discardButtonRect3 = (375, 355, 50, 27)
-discardButtonRect4 = (525, 355, 50, 27)
-discardButtonRect5 = (675, 355, 50, 27)
-
-holdButtonCordinates = {0:(75, 355), 1:(225, 355), 2:(375, 355), 3:(525, 355), 4:(675, 355)}
-
 
 
 def isRectClicked(dimensions):
@@ -257,25 +249,10 @@ def isRectClicked(dimensions):
             return True
 
 def isDiscardButtonClicked():
-    #card1
-    if isRectClicked(discardButtonRect1) == True:
-        return playerHand.hand[0]
-    #card2
-    if isRectClicked(discardButtonRect2) == True:
-        return playerHand.hand[1]
-    #card3
-    if isRectClicked(discardButtonRect3) == True:
-        return playerHand.hand[2]
-    #card4
-    if isRectClicked(discardButtonRect4) == True:
-        return playerHand.hand[3]
-    #card5
-    if isRectClicked(discardButtonRect5) == True:
-        return playerHand.hand[4]
-    else:
-        return False
-
-
+    for i in range(len(discardButtonPositions)):
+        if isRectClicked(discardButtonPositions[i]) == True:
+            return playerHand.hand[i]
+    return False
 
 while True:
     for event in pygame.event.get():

@@ -136,7 +136,7 @@ class hand(object):
 # Scoring
 
 def checkHighCard(hand):
-    return max(sorted(hand.getRanks()))
+    return max(hand.getRanks())
 
 def checkFlush(hand):
     if len(hand.countSuitMatches()) == 1:
@@ -163,9 +163,9 @@ def checkStraightFlush(hand):
 def checkFullHouse(hand):
     hand = sorted(hand.getRanks())
     if hand[2] == hand[4]:
-        return True, hand[1], hand[2]
+        return True
     if hand[0] == hand[2]:
-        return True, hand[0], hand[3]
+        return True
     else:
         return False
 
