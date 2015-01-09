@@ -3,7 +3,6 @@ import pygame
 import random
 import sys
 import collections
-import _abcoll
 import poker
 from pygame.locals import *
 

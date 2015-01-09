@@ -15,8 +15,6 @@ handSize = 5
 class Card(object):
 
     def __init__(self, rank, suit):
-        self.rank = rank
-        self.suit = suit
         self.card = (rank, suit)
 
 def newDeck():
