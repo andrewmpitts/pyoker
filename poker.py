@@ -26,42 +26,42 @@ class Hand(object):
     def scoreHand(self):
         
         if self.checkRoyalFlush() == True:
-            # print "Royal Flush: 200 Points"
+            print "Royal Flush: 200 Points"
             return 200
 
         if self.checkStraightFlush() == True:
-            # print "Straight Flush: 175 Points"
+            print "Straight Flush: 175 Points"
             return 175
 
         if self.checkFourPair() == True:
-            # print "Four of a Kind: 150 Points"
+            print "Four of a Kind: 150 Points"
             return 150
 
         if self.checkFullHouse() == True:
-            # print "Full House: 125 Points"
+            print "Full House: 125 Points"
             return 125
 
         if self.checkFlush() == True:
-            # print "Flush: 100 Points"
+            print "Flush: 100 Points"
             return 100
 
         if self.checkStraight() == True:
-            # print "Straight: 75 Points"
+            print "Straight: 75 Points"
             return 75
 
         if self.checkThreePair() == True:
-            # print "Three of a Kind: 50 Points"
+            print "Three of a Kind: 50 Points"
             return 50
 
         if self.checkTwoPairs() == True:
-            # print "Two Pairs: 25 Points"
+            print "Two Pairs: 25 Points"
             return 25
 
         if self.checkPair() == True:
-            # print "Pair: 10 Points"
+            print "Pair: 10 Points"
             return 10
 
-        # print "No valid hands. You lose."
+        print "No valid hands. You lose."
         return -25
 
 
@@ -98,43 +98,30 @@ class Hand(object):
         return max(self.getRanks())
 
     def checkFlush(self):
-        if len(self.countSuitMatches()) == 1:
-            return True
-        else:
-            return False
+        return len(self.countSuitMatches()) == 1
 
     def checkStraight(self):
         hand = sorted(self.getRanks())
-        if hand[4] - 4 == hand[0]:
-            return True
-        else:
-            return False
+        return hand[4] - 4 == hand[0] and len(self.countRankMatches()) == 5
 
     def checkStraightFlush(self):
-        if self.checkFlush() == True and self.checkStraight() == True:
-            return True
+        return self.checkFlush() == True and self.checkStraight() == True
 
     def checkRoyalFlush(self):
         if self.checkFlush() == True and self.checkStraight() == True:
-            if sum(self.getRanks()) == 60:
-                return True
+            return sum(self.getRanks()) == 60
 
     def checkFullHouse(self):
         hand = sorted(self.getRanks())
-        if hand[2] == hand[4]:
-            return True
-        if hand[0] == hand[2]:
+        print self.getRanks()
+        if len(self.countRankMatches()) == 2:
             return True
         else:
             return False
 
     def checkTwoPairs(self):
         ranks = sorted(self.getRanks())
-        numberOfPairs = 0
-        if ranks.count(ranks[1]) == 2 and ranks.count(ranks[3]) == 2:
-            return True
-        else:
-            return False
+        return ranks.count(ranks[1]) == 2 and ranks.count(ranks[3]) == 2
 
     def checkFourPair(self):
         ranks = sorted(self.getRanks())
