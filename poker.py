@@ -102,6 +102,8 @@ class Hand(object):
 
     def checkStraight(self):
         hand = sorted(self.getRanks())
+        if self.getRanks() == [2,3,4,5,14]:
+            return True
         return hand[4] - 4 == hand[0] and len(self.countRankMatches()) == 5
 
     def checkStraightFlush(self):
