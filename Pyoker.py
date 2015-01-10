@@ -12,11 +12,6 @@ screen = pygame.display.set_mode((800,450))
 pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
 
-J = 11
-Q = 12
-K = 13
-A = 14
-
 handInPlay = False
 
 #suits
@@ -239,7 +234,6 @@ renderDrawNewHandButton()
 renderHoldAllButton()
 renderDrawButton()
 renderDiscardAllButton()
-
 
 def isRectClicked(dimensions):
     mousePosition = pygame.mouse.get_pos()

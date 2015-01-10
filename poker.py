@@ -2,48 +2,17 @@
 import random
 import sys
 import collections
-import _abcoll
-
-
-J = 11
-Q = 12
-K = 13
-A = 14
-
-handSize = 5
 
 class Card(object):
 
     def __init__(self, rank, suit):
-        self.card = (rank, suit)
-
-def newDeck():
-    newDeck = []
-    for i in [2,3,4,5,6,7,8,9,10,J,Q,K,A]:
-        for n in ['heart','diamond','club','spade']:
-            newDeck.append(Card(i,n))
-    random.shuffle(newDeck)
-    return newDeck
-
-def shuffleDeck(deck):
-    random.shuffle(deck)
-    return deck
-
-def drawHand(deck):
-    hand = []
-    for i in range(handSize):
-        hand.append(deck.pop())
-    return hand
-
-def drawCard(deck):
-    return deck.pop()
+        self.suit = suit
+        self.rank = rank
 
 class hand(object):
     
     def __init__(self, hand):
         self.hand = hand
-        self.length = len(hand)
-        # self.cards = 
 
     def discard(self, discards, deck):
         if len(discards) > 0:
@@ -53,16 +22,6 @@ class hand(object):
             return self.hand
         else:
             return False
-
-    # Designates cards to omit from draw
-    def hold(self, cardsHeld):
-        newHand = []
-        for i in range(len(cardsHeld)):
-            newHand.append(self.hand[i])
-        for i in range(handSize - len(cardsHeld)):
-            newHand.append(drawCard(deck))
-        self.hand = newHand
-        return newHand
 
     def scoreHand(self):
         
@@ -105,7 +64,7 @@ class hand(object):
     def getCards(self):
         cards = []
         for i in range(len(self.hand)):
-            cards.append(self.hand[i].card)
+            cards.append(self.hand[i])
         return cards
         # return self.hand[0]
 
@@ -131,9 +90,31 @@ class hand(object):
         sortedHand = sorted(self.getRanks)
         self.hand == sortedHand
 
+#Deck functions
+def newDeck():
+    newDeck = []
+    for i in [2,3,4,5,6,7,8,9,10,11,12,13,14]:
+        for n in ['heart','diamond','club','spade']:
+            newDeck.append(Card(i,n))
+    random.shuffle(newDeck)
+    return newDeck
+
+def shuffleDeck(deck):
+    random.shuffle(deck)
+    return deck
+
+def drawHand(deck):
+    hand = []
+    for i in range(5):
+        hand.append(deck.pop())
+    return hand
+
+def drawCard(deck):
+    return deck.pop()
+
 # Scoring
 
-def checkHighCard(hand):
+def getHighCard(hand):
     return max(hand.getRanks())
 
 def checkFlush(hand):
@@ -144,19 +125,19 @@ def checkFlush(hand):
 
 def checkStraight(hand):
     hand = sorted(hand.getRanks())
-    count = 1
-    for i in range(4):
-        if hand[i] + 1 == hand[i+1]:
-            # print hand[i]
-            count += 1
-    if count == 5:
+    if hand[4] - 4 == hand[0]:
         return True
     else:
         return False
 
 def checkStraightFlush(hand):
     if checkFlush(hand) == True and checkStraight(hand) == True:
-        return True, checkHighCard(hand)
+        return True
+
+def checkRoyalFlush(hand):
+    if checkFlush(hand) == True and checkStraight(hand) == True:
+        if sum(hand.getRanks()) == 60:
+            return True
 
 def checkFullHouse(hand):
     hand = sorted(hand.getRanks())
@@ -183,15 +164,15 @@ def checkFourPair(hand):
     for i in range(2):
         if ranks.count(ranks[i]) == 4:
             return True
-        else:
-            return False
+    else:
+        return False
 
 def checkThreePair(hand):
     ranks = sorted(hand.getRanks())
     for i in range(3):
         if ranks.count(ranks[i]) == 3:
             return True
-        return False
+    return False
 
 def checkPair(hand):
     ranks = sorted(hand.getRanks())
