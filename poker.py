@@ -25,6 +25,10 @@ class hand(object):
 
     def scoreHand(self):
         
+        if checkRoyalFlush(self) == True:
+            # print "Royal Flush: 200 Points"
+            return 200
+
         if checkStraightFlush(self) == True:
             # print "Straight Flush: 175 Points"
             return 175
@@ -150,11 +154,8 @@ def checkFullHouse(hand):
 
 def checkTwoPairs(hand):
     ranks = sorted(hand.getRanks())
-    pair = []
-    for i in range(len(ranks)):
-        if ranks.count(ranks[i]) == 2:
-            pair.append(ranks[i])
-    if len(set(pair)) == 2:
+    numberOfPairs = 0
+    if ranks.count(ranks[1]) == 2 and ranks.count(ranks[3]) == 2:
         return True
     else:
         return False
