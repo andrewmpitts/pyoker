@@ -51,7 +51,7 @@ discardAllButtonRect = (325, 400, 75, 25)
 holdAllButtonRect = (245, 400, 75, 25)
 
 deck = poker.newDeck()
-playerHand = poker.hand(poker.drawHand(deck))
+playerHand = poker.Hand(poker.drawHand(deck))
 discards = set()
 
 def convertSuitToUnicode(suit): #Converts the card suit into Unicode for display in GUI
@@ -253,7 +253,7 @@ while True:
 
             if isRectClicked(newHandButtonRect) == True: #Checks if 'New Hand' button is clicked
                 deck = poker.newDeck()
-                playerHand = poker.hand(poker.drawHand(deck))
+                playerHand = poker.Hand(poker.drawHand(deck))
                 renderHand()
                 discards = set()
                 renderDiscardButtons()
