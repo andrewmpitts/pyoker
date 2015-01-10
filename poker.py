@@ -1,6 +1,5 @@
 #card logic
 import random
-import sys
 import collections
 
 class Card(object):
@@ -62,7 +61,7 @@ class Hand(object):
             return 10
 
         print "No valid hands. You lose."
-        return -25
+        return -15
 
 
     def getCards(self):
@@ -107,19 +106,15 @@ class Hand(object):
         return hand[4] - 4 == hand[0] and len(self.countRankMatches()) == 5
 
     def checkStraightFlush(self):
-        return self.checkFlush() == True and self.checkStraight() == True
+        return self.checkFlush() and self.checkStraight()
 
     def checkRoyalFlush(self):
-        if self.checkFlush() == True and self.checkStraight() == True:
+        if self.checkFlush() and self.checkStraight():
             return sum(self.getRanks()) == 60
 
     def checkFullHouse(self):
         hand = sorted(self.getRanks())
-        print self.getRanks()
-        if len(self.countRankMatches()) == 2:
-            return True
-        else:
-            return False
+        len(self.countRankMatches()) == 2
 
     def checkTwoPairs(self):
         ranks = sorted(self.getRanks())
@@ -155,6 +150,10 @@ def newDeck():
             newDeck.append(Card(i,n))
     random.shuffle(newDeck)
     return newDeck
+
+def recycleCards(discards):
+    for cards in discards:
+        deck.append(cards)
 
 def shuffleDeck(deck):
     random.shuffle(deck)

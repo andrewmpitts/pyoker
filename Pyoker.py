@@ -1,14 +1,15 @@
 # Pyoker
 import pygame
-import random
 import sys
-import collections
 import poker
 from pygame.locals import *
 
+X_RES = 800
+Y_RES = 450
+
 pygame.init()
 pygame.font.init()
-screen = pygame.display.set_mode((800,450))
+screen = pygame.display.set_mode((X_RES, Y_RES))
 pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
 
@@ -153,8 +154,8 @@ def renderPlayerScore():
 def renderDrawNewHandButton():
     newHandButtonPos = (50, 400, 100, 25)
     newHandButtonText = buttonFont.render("Draw New Hand", 1, (0, 0, 0))
-    if drawNewHandButtonEnabled == True:
-        pygame.draw.rect(screen, colors['black'], (50, 400, 77, 27))
+    if drawNewHandButtonEnabled:
+        pygame.draw.rect(screen, colors['black'], (50, 400, 102, 27))
         pygame.draw.rect(screen, colors['white'], newHandButtonPos)
         screen.blit(newHandButtonText, (55, 407))
     else:
@@ -180,7 +181,7 @@ def renderDiscardButtons():
         buttonXPos += 150
         
 def renderHoldAllButton():
-    if holdAllButtonEnabled == True:
+    if holdAllButtonEnabled:
         holdAllButtonText = buttonFont.render("Hold All", 1, (0, 0, 0))
         pygame.draw.rect(screen, colors['black'], (245, 400, 77, 27))
         pygame.draw.rect(screen, colors['white'], (245, 400, 75, 25))
@@ -192,7 +193,7 @@ def renderHoldAllButton():
         screen.blit(holdAllButtonText, (255, 407))
 
 def renderDiscardAllButton():
-    if discardAllButtonEnabled == True:
+    if discardAllButtonEnabled:
         holdAllButtonText = buttonFont.render("Discard All", 1, (0, 0, 0))
         pygame.draw.rect(screen, colors['black'], (325, 400, 77, 27))
         pygame.draw.rect(screen, colors['white'], (325, 400, 75, 25))
@@ -204,7 +205,7 @@ def renderDiscardAllButton():
         screen.blit(holdAllButtonText, (329, 407))
 
 def renderDrawButton():
-    if drawButtonEnabled == True:
+    if drawButtonEnabled:
         drawButtonText = buttonFont.render("Draw", 1, (0, 0, 0))
         pygame.draw.rect(screen, colors['black'], (160, 400, 77, 27))
         pygame.draw.rect(screen, colors['white'], (160, 400, 75, 25))
@@ -243,14 +244,15 @@ def isRectClicked(dimensions):
 
 def isDiscardButtonClicked():
     for i in range(len(discardButtonPositions)):
-        if isRectClicked(discardButtonPositions[i]) == True:
+        if isRectClicked(discardButtonPositions[i]):
             return playerHand.hand[i]
     return False
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
-            if isRectClicked(newHandButtonRect) == True: #Checks if 'New Hand' button is clicked
+            print True
+            if isRectClicked(newHandButtonRect):
                 deck = poker.newDeck()
                 playerHand = poker.Hand(poker.drawHand(deck))
                 renderHand()
@@ -263,20 +265,18 @@ while True:
                 drawNewHandButtonEnabled = False
                 renderDrawNewHandButton()
 
-            if isDiscardButtonClicked() != False:
+            if isDiscardButtonClicked():
                 if isDiscardButtonClicked() not in discards:
                     discards.add(isDiscardButtonClicked())
                 else:
                     discards.remove(isDiscardButtonClicked())
                 renderDiscardButtons()
-                print discards
 
-            if isRectClicked(drawButtonRect) == True: #Checks is 'Draw' button is clicked
+            if isRectClicked(drawButtonRect): #Checks is 'Draw' button is clicked
                 if len(discards) > 0:
                     playerHand.discard(discards, deck)
                     discards = set()
                 renderHand()
-                playerHand.scoreHand()
                 playerScore += playerHand.scoreHand()
                 renderPlayerScore()
                 drawButtonEnabled = False
@@ -288,26 +288,24 @@ while True:
                 holdAllButtonEnabled = False
                 renderHoldAllButton()
 
-            if isRectClicked(discardAllButtonRect) == True:
-                if discardAllButtonEnabled == True:
+            if isRectClicked(discardAllButtonRect):
+                if discardAllButtonEnabled:
                     for card in playerHand.hand:
                         discards.add(card)
                         discardAllButtonEnabled = False
                         renderDiscardAllButton()
                         holdAllButtonEnabled = True
                         renderHoldAllButton()
-                    print discards
 
-            if isRectClicked(holdAllButtonRect) == True:
-                if holdAllButtonEnabled == True:
+            if isRectClicked(holdAllButtonRect):
+                if holdAllButtonEnabled:
                     discards = set()
-                    print discards
                     holdAllButtonEnabled = False
                     renderHoldAllButton()
                     discardAllButtonEnabled = True
                     renderDiscardAllButton()
 
-            renderDiscardButtons()
+            # renderDiscardButtons()
         if event.type == QUIT:
             pygame.quit()
             sys.ext()
