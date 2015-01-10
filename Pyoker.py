@@ -250,7 +250,6 @@ def isDiscardButtonClicked():
 while True:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
-
             if isRectClicked(newHandButtonRect) == True: #Checks if 'New Hand' button is clicked
                 deck = poker.newDeck()
                 playerHand = poker.Hand(poker.drawHand(deck))
@@ -298,8 +297,6 @@ while True:
                         holdAllButtonEnabled = True
                         renderHoldAllButton()
                     print discards
-                else:
-                    print False
 
             if isRectClicked(holdAllButtonRect) == True:
                 if holdAllButtonEnabled == True:
@@ -309,8 +306,7 @@ while True:
                     renderHoldAllButton()
                     discardAllButtonEnabled = True
                     renderDiscardAllButton()
-                else:
-                    print False
+
             renderDiscardButtons()
         if event.type == QUIT:
             pygame.quit()
