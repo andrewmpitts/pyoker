@@ -14,11 +14,10 @@ class Hand(object):
         self.hand = hand
 
     def discard(self, discards, deck):
-        if len(discards) > 0:
-            for card in discards:
-                self.hand.remove(card)
-                self.hand.append(drawCard(deck))
-            return self.hand
+        for card in discards:
+            self.hand.remove(card)
+            self.hand.append(drawCard(deck))
+        return self.hand
 
     def scoreHand(self):
         
@@ -62,24 +61,11 @@ class Hand(object):
         return -15
 
 
-    def getCards(self):
-        cards = []
-        for i in range(len(self.hand)):
-            cards.append(self.hand[i])
-        return cards
-        # return self.hand[0]
-
     def getRanks(self):
-        ranks = []
-        for i in self.hand:
-            ranks.append(i.rank)
-        return sorted(ranks)
+        return sorted([card.rank for card in self.hand])
 
     def getSuits(self):
-        suits = []
-        for i in self.hand:
-            suits.append(i.suit)
-        return suits
+        return [card.suit for card in self.hand]
 
     def countRankMatches(self):
         return collections.Counter(self.getRanks())
@@ -123,8 +109,6 @@ class Hand(object):
         for i in range(2):
             if ranks.count(ranks[i]) == 4:
                 return True
-        else:
-            return False
 
     def checkThreePair(self):
         ranks = sorted(self.getRanks())
@@ -143,9 +127,9 @@ class Hand(object):
 #Deck functions
 def newDeck():
     newDeck = []
-    for i in [2,3,4,5,6,7,8,9,10,11,12,13,14]:
-        for n in ['heart','diamond','club','spade']:
-            newDeck.append(Card(i,n))
+    for rank in range(2,15):
+        for suit in ['heart','diamond','club','spade']:
+            newDeck.append(Card(rank,suit))
     random.shuffle(newDeck)
     return newDeck
 
