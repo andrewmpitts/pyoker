@@ -310,5 +310,5 @@ while True:
             # renderDiscardButtons()
         if event.type == QUIT:
             pygame.quit()
-            sys.ext()
+            sys.exit()
     pygame.display.update()
