@@ -13,6 +13,7 @@ pygame.font.init()
 screen = pygame.display.set_mode((X_RES, Y_RES))
 pygame.display.set_caption("Video Pyoker")
 screen.fill((0,0,255))
+clock = pygame.time.Clock()
 
 handInPlay = False
 
@@ -56,6 +57,12 @@ deck = poker.newDeck()
 playerHand = poker.Hand(poker.drawHand(deck))
 discards = set()
 
+drawNewHandButtonEnabled = True
+holdButtonsEnabled = False
+drawButtonEnabled = False
+discardAllButtonEnabled = False
+holdAllButtonEnabled = False
+
 def convertSuitToUnicode(suit): #Converts the card suit into Unicode for display in GUI
     if suit == 'spade':
         return spade
@@ -65,12 +72,6 @@ def convertSuitToUnicode(suit): #Converts the card suit into Unicode for display
         return diamond
     else:
         return heart
-
-drawNewHandButtonEnabled = True
-holdButtonsEnabled = False
-drawButtonEnabled = False
-discardAllButtonEnabled = False
-holdAllButtonEnabled = False
 
 def convertFaceCardRanks(card):
 
@@ -165,7 +166,7 @@ def renderDrawNewHandButton():
         screen.blit(newHandButtonText, (55, 407))
 
 def renderDiscardButtons():
-    
+
     discardButtonText = buttonFont.render("Discard", 1, (0, 0, 0))
     undiscardButtonText = buttonFont.render("Hold", 1, (0, 0, 0))
     buttonXPos =  65
@@ -251,8 +252,8 @@ def isDiscardButtonClicked():
 
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP:
-            
+        clock.tick(20)
+        if event.type == pygame.MOUSEBUTTONUP: 
             if isRectClicked(newHandButtonRect):
                 deck = poker.newDeck()
                 playerHand = poker.Hand(poker.drawHand(deck))
