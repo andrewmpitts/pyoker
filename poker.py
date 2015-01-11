@@ -98,7 +98,7 @@ class Hand(object):
 
     def checkFullHouse(self):
         orderedRanks = self.getRanks()
-        return orderedRanks.count(orderedRanks[0]) + orderedRanks.count(orderedRanks[4]) == 5
+        return (orderedRanks.count(orderedRanks[0]) + orderedRanks.count(orderedRanks[4]) == 5)
 
     def checkTwoPair(self):
         orderedRanks = self.getRanks()
