@@ -2,6 +2,7 @@
 import pygame
 import sys
 import poker
+# import pyokergraphics
 from pygame.locals import *
 
 X_RES = 800
@@ -251,7 +252,7 @@ def isDiscardButtonClicked():
 while True:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
-            print True
+            
             if isRectClicked(newHandButtonRect):
                 deck = poker.newDeck()
                 playerHand = poker.Hand(poker.drawHand(deck))

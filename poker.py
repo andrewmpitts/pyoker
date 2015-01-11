@@ -15,12 +15,10 @@ class Hand(object):
 
     def discard(self, discards, deck):
         if len(discards) > 0:
-            for i in discards:
-                self.hand.remove(i)
+            for card in discards:
+                self.hand.remove(card)
                 self.hand.append(drawCard(deck))
             return self.hand
-        else:
-            return False
 
     def scoreHand(self):
         
@@ -114,7 +112,7 @@ class Hand(object):
 
     def checkFullHouse(self):
         hand = sorted(self.getRanks())
-        len(self.countRankMatches()) == 2
+        return hand.count(hand[0]) + hand.count(hand[4]) == 5
 
     def checkTwoPairs(self):
         ranks = sorted(self.getRanks())
