@@ -307,7 +307,7 @@ while True:
                     discardAllButtonEnabled = True
                     renderDiscardAllButton()
 
-            # renderDiscardButtons()
+            renderDiscardButtons()
         if event.type == QUIT:
             pygame.quit()
             sys.exit()

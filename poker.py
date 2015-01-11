@@ -33,7 +33,7 @@ class Hand(object):
             print "Straight Flush: 175 Points"
             return 175
 
-        if self.checkFourPair() == True:
+        if self.checkFourKind() == True:
             print "Four of a Kind: 150 Points"
             return 150
 
@@ -49,11 +49,11 @@ class Hand(object):
             print "Straight: 75 Points"
             return 75
 
-        if self.checkThreePair() == True:
+        if self.checkThreeKind() == True:
             print "Three of a Kind: 50 Points"
             return 50
 
-        if self.checkTwoPairs() == True:
+        if self.checkTwoPair() == True:
             print "Two Pairs: 25 Points"
             return 25
 
@@ -77,10 +77,6 @@ class Hand(object):
     def countSuitMatches(self):
         return collections.Counter(self.getSuits())
 
-    def sortHand(self):
-        sortedHand = sorted(self.getRanks)
-        self.hand == sortedHand
-
     def getHighCard(self):
         return max(self.getRanks())
 
@@ -88,10 +84,10 @@ class Hand(object):
         return len(self.countSuitMatches()) == 1
 
     def checkStraight(self):
-        hand = sorted(self.getRanks())
-        if self.getRanks() == [2,3,4,5,14]:
+        orderedRanks = self.getRanks()
+        if orderedRanks == [2,3,4,5,14]:
             return True
-        return hand[4] - 4 == hand[0] and len(self.countRankMatches()) == 5
+        return orderedRanks[4] - 4 == orderedRanks[0] and len(self.countRankMatches()) == 5
 
     def checkStraightFlush(self):
         return self.checkFlush() and self.checkStraight()
@@ -101,30 +97,30 @@ class Hand(object):
             return sum(self.getRanks()) == 60
 
     def checkFullHouse(self):
-        hand = sorted(self.getRanks())
-        return hand.count(hand[0]) + hand.count(hand[4]) == 5
+        orderedRanks = self.getRanks()
+        return orderedRanks.count(orderedRanks[0]) + orderedRanks.count(orderedRanks[4]) == 5
 
-    def checkTwoPairs(self):
-        ranks = sorted(self.getRanks())
-        return ranks.count(ranks[1]) == 2 and ranks.count(ranks[3]) == 2
+    def checkTwoPair(self):
+        orderedRanks = self.getRanks()
+        return orderedRanks.count(orderedRanks[1]) == 2 and orderedRanks.count(orderedRanks[3]) == 2
 
-    def checkFourPair(self):
-        ranks = sorted(self.getRanks())
+    def checkFourKind(self):
+        orderedRanks = self.getRanks()
         for i in range(2):
-            if ranks.count(ranks[i]) == 4:
+            if orderedRanks.count(orderedRanks[i]) == 4:
                 return True
 
-    def checkThreePair(self):
-        ranks = sorted(self.getRanks())
+    def checkThreeKind(self):
+        orderedRanks = self.getRanks()
         for i in range(3):
-            if ranks.count(ranks[i]) == 3:
+            if orderedRanks.count(orderedRanks[i]) == 3:
                 return True
         return False
 
     def checkPair(self):
-        ranks = sorted(self.getRanks())
+        orderedRanks = self.getRanks()
         for i in range(4):
-            if ranks.count(ranks[i]) == 2:
+            if orderedRanks.count(orderedRanks[i]) == 2:
                 return True
         return False
 
