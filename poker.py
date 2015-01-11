@@ -14,9 +14,13 @@ class Hand(object):
         self.hand = hand
 
     def discard(self, discards, deck):
-        for card in discards:
-            self.hand.remove(card)
-            self.hand.append(drawCard(deck))
+        newHand = []
+        for card in range(5):
+            if self.hand[card] not in discards:
+                newHand.append(self.hand[card])
+            else:
+                newHand.append(drawCard(deck))
+        self.hand = newHand
         return self.hand
 
     def scoreHand(self):
