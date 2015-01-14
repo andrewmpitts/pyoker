@@ -13,6 +13,7 @@ class Hand(object):
     def __init__(self, hand):
         self.hand = hand
 
+
     def discard(self, discards, deck):
         newHand = []
         for card in range(5):
@@ -23,6 +24,7 @@ class Hand(object):
         self.hand = newHand
         return self.hand
 
+        
     def scoreHand(self):
         
         if self.checkRoyalFlush() == True:
@@ -133,9 +135,14 @@ def newDeck():
     random.shuffle(newDeck)
     return newDeck
 
-def recycleCards(discards):
-    for cards in discards:
-        deck.append(cards)
+def recycleDiscards(discards, deck):
+    for i in range(5):
+        deck.extend(i)
+
+def recycleHand(hand, deck):
+    for i in range(5):
+        deck.append(hand.hand[i])
+        # print hand.hand[i]
 
 def shuffleDeck(deck):
     random.shuffle(deck)

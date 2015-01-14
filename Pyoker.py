@@ -35,6 +35,12 @@ buttonFont = pygame.font.SysFont("monospace", 12)
 #GUI Color
 colors = {'white':(255, 255, 255), 'black':(0, 0, 0), 'blue':(0, 0, 255), 'red':(255, 0, 0), 'green': (0, 255, 0), 'grey': (125, 125, 125)}
 
+#Suits
+suitUnicodeMap = {'spade': u"\u2660",'club': u"\u2663",'heart': u"\u2665",'diamond': u"\u2666"}
+
+#Face Cards
+faceCardRankMap = {'11':'J','12':'Q','13':'K','14':'A'}
+
 #GUI Shapes
 CARD_WIDTH = 100
 CARD_HEIGHT = 150
@@ -63,36 +69,14 @@ drawButtonEnabled = False
 discardAllButtonEnabled = False
 holdAllButtonEnabled = False
 
-def convertSuitToUnicode(suit): #Converts the card suit into Unicode for display in GUI
-    if suit == 'spade':
-        return spade
-    if suit == 'club':
-        return club
-    if suit == 'diamond':
-        return diamond
-    else:
-        return heart
-
-def convertFaceCardRanks(card):
-
-    if card.rank == 11:
-        return "J"
-    if card.rank == 12:
-        return "Q"
-    if card.rank == 13:
-        return "K"
-    if card.rank == 14:
-        return "A"
-
-# print convertFaceCardRanks(playerHand.hand[0])
-
 def renderCard(position, card):
 
-    suit = convertSuitToUnicode(card.suit)
+    suit = suitUnicodeMap[card.suit]
     if card.rank > 10:
-        rank = convertFaceCardRanks(card)
+        rank = faceCardRankMap[str(card.rank)]
     else:
         rank = card.rank
+
     #draw card border
     pygame.draw.rect(screen, colors['black'], position)
 
@@ -229,6 +213,7 @@ def getClick():
 
 def renderHand():
     for i in range(handSize):
+        # print type(playerHand)
         renderCard(cardPositions[i], playerHand.hand[i])
 
 renderScoreTable()
@@ -249,7 +234,10 @@ def isDiscardButtonClicked():
         if isRectClicked(discardButtonPositions[i]):
             return playerHand.hand[i]
     return False
-
+a = [1,2,3]
+print a.extend([2,3])
+print a
+print deck[0:4]
 while True:
     for event in pygame.event.get():
         clock.tick(20)
@@ -276,8 +264,9 @@ while True:
 
             if isRectClicked(drawButtonRect): #Checks is 'Draw' button is clicked
                 if len(discards) > 0:
+                    # print [i for i in discards]
                     playerHand.discard(discards, deck)
-                    discards = set()
+                discards = set()
                 renderHand()
                 playerScore += playerHand.scoreHand()
                 renderPlayerScore()
