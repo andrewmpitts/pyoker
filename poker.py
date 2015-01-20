@@ -1,161 +1,79 @@
 #card logic
 import random
 import collections
+from collections import Counter, namedtuple
+from enum import Enum
 
-class Card(object):
+Card = namedtuple('Card', ['rank', 'suit'])
 
-    def __init__(self, rank, suit):
-        self.suit = suit
-        self.rank = rank
+class Score(Enum):
+    NOTHING = 0
+    PAIR = 1
+    TWO_PAIR = 2
+    THREE_KIND = 3
+    STRAIGHT = 4
+    FLUSH = 5
+    FULL_HOUSE = 6
+    FOUR_KIND = 7
+    STRAIGHT_FLUSH = 8
+    ROYAL_FLUSH = 9
+
+class Suit(Enum):
+    HEART = 'H'
+    DIAMOND = 'D'
+    CLUB = 'C'
+    SPADE = 'S'
 
 class Hand(object):
     
     def __init__(self, hand):
-        self.hand = hand
+        self.cards = list(cards)
 
-
-    def discard(self, discards, deck):
-        newHand = []
-        for card in range(5):
-            if self.hand[card] not in discards:
-                newHand.append(self.hand[card])
-            else:
-                newHand.append(drawCard(deck))
-        self.hand = newHand
-        return self.hand
-
+    def replace(self, discards, newcards):
+        self.cards = [card for card in self.cards if card not in discards].extend(newcards)
         
     def scoreHand(self):
-        
-        if self.checkRoyalFlush() == True:
-            print "Royal Flush: 200 Points"
-            return 200
+        sortedRanks = sorted([card.rank for card in self.cards])
+        if sortedRanks == [2, 3, 4, 5, 14]:
+            sortedRanks = [1, 2, 3, 4, 5]
 
-        if self.checkStraightFlush() == True:
-            print "Straight Flush: 175 Points"
-            return 175
+        rankCounts = sorted(Counter(sranks).values())
+        oneSuit = len(set([card.suit for card in self.cards])) == 1
+        straight = len(rankCounts) == 5 and (sortedRanks[-1] - sortedRanks[0]) == 4
 
-        if self.checkFourKind() == True:
-            print "Four of a Kind: 150 Points"
-            return 150
+        result = Score.NOTHING
 
-        if self.checkFullHouse() == True:
-            print "Full House: 125 Points"
-            return 125
+        if onesuit:
+            if seq:
+                if sortedRanks[-1] == 14:
+                    result = Score.ROYAL_FLUSH
+                else:
+                    result = Score.STRAIGHT_FLUSH
+            else:
+                result = Score.FLUSH
 
-        if self.checkFlush() == True:
-            print "Flush: 100 Points"
-            return 100
+        elif seq:
+            result = Score.STRAIGHT
+        elif rankCounts == [2, 3]:
+            result = Score.FULL_HOUSE
+        elif rankCounts == [1, 2, 2]:
+            result = Score.TWO_PAIR
+        elif 4 in rankCounts:
+            result = Score.FOUR_KIND
+        elif 3 in rankCounts:
+            result = Score.THREE_KIND
+        elif 2 in rankCounts:
+            result = Score.PAIR
 
-        if self.checkStraight() == True:
-            print "Straight: 75 Points"
-            return 75
+        return result
 
-        if self.checkThreeKind() == True:
-            print "Three of a Kind: 50 Points"
-            return 50
-
-        if self.checkTwoPair() == True:
-            print "Two Pairs: 25 Points"
-            return 25
-
-        if self.checkPair() == True:
-            print "Pair: 10 Points"
-            return 10
-
-        print "No valid hands. You lose."
-        return -15
-
-
-    def getRanks(self):
-        return sorted([card.rank for card in self.hand])
-
-    def getSuits(self):
-        return [card.suit for card in self.hand]
-
-    def countRankMatches(self):
-        return collections.Counter(self.getRanks())
-
-    def countSuitMatches(self):
-        return collections.Counter(self.getSuits())
-
-    def getHighCard(self):
-        return max(self.getRanks())
-
-    def checkFlush(self):
-        return len(self.countSuitMatches()) == 1
-
-    def checkStraight(self):
-        orderedRanks = self.getRanks()
-        if orderedRanks == [2,3,4,5,14]:
-            return True
-        return orderedRanks[4] - 4 == orderedRanks[0] and len(self.countRankMatches()) == 5
-
-    def checkStraightFlush(self):
-        return self.checkFlush() and self.checkStraight()
-
-    def checkRoyalFlush(self):
-        if self.checkFlush() and self.checkStraight():
-            return sum(self.getRanks()) == 60
-
-    def checkFullHouse(self):
-        orderedRanks = self.getRanks()
-        return (orderedRanks.count(orderedRanks[0]) + orderedRanks.count(orderedRanks[4]) == 5)
-
-    def checkTwoPair(self):
-        orderedRanks = self.getRanks()
-        return orderedRanks.count(orderedRanks[1]) == 2 and orderedRanks.count(orderedRanks[3]) == 2
-
-    def checkFourKind(self):
-        orderedRanks = self.getRanks()
-        for i in range(2):
-            if orderedRanks.count(orderedRanks[i]) == 4:
-                return True
-
-    def checkThreeKind(self):
-        orderedRanks = self.getRanks()
-        for i in range(3):
-            if orderedRanks.count(orderedRanks[i]) == 3:
-                return True
-        return False
-
-    def checkPair(self):
-        orderedRanks = self.getRanks()
-        for i in range(4):
-            if orderedRanks.count(orderedRanks[i]) == 2:
-                return True
-        return False
-
-#Deck functions
-def newDeck():
-    newDeck = []
-    for rank in range(2,15):
-        for suit in ['heart','diamond','club','spade']:
-            newDeck.append(Card(rank,suit))
-    random.shuffle(newDeck)
-    return newDeck
-
-def recycleDiscards(discards, deck):
-    for i in range(5):
-        deck.extend(i)
-
-def recycleHand(hand, deck):
-    for i in range(5):
-        deck.append(hand.hand[i])
-        # print hand.hand[i]
-
-def shuffleDeck(deck):
-    random.shuffle(deck)
-    return deck
-
-def drawHand(deck):
-    hand = []
-    for i in range(5):
-        hand.append(deck.pop())
-    return hand
-
-def drawCard(deck):
-    return deck.pop()
-
-# Scoring
-
+class Deck():
+    def __init__(self):
+        self.cards = [Card(rank, suit) for suit in Suit for rank in range(2, 15)]
+        random.shuffle(self.cards)
+ 
+    def draw(self, count):
+        result = self.cards[-count:]
+        self.cards = self.cards[:-count]
+ 
+        return result
